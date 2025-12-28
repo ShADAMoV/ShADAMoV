@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Arabic with Abdulrahman</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="container nav">
+        <div class="logo">Arabic Mentor</div>
+        <div class="lang-switch">
+            <button onclick="setLang('ru')">RU</button>
+            <button onclick="setLang('en')">EN</button>
+            <button onclick="setLang('ar')">AR</button>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <h1 data-i18n="title"></h1>
+            <p class="subtitle" data-i18n="subtitle"></p>
+            <a id="waBtn" class="cta" href="https://wa.me/201201974500" target="_blank" data-i18n="cta"></a>
+        </div>
+        <img src="assets/hero.jpg" alt="">
+    </div>
+</section>
+
+<section class="features">
+    <div class="container grid3">
+        <div class="card" data-i18n="f1"></div>
+        <div class="card" data-i18n="f2"></div>
+        <div class="card" data-i18n="f3"></div>
+    </div>
+</section>
+
+<section class="about">
+    <div class="container">
+        <h2 data-i18n="aboutTitle"></h2>
+        <p data-i18n="aboutText"></p>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>WhatsApp: <a href="https://wa.me/201201974500">+201201974500</a></p>
+        <small>© 2025 Arabic Mentor</small>
+    </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
