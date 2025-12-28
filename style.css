@@ -25,6 +25,10 @@ header { border-bottom: 1px solid #222; }
     cursor: pointer;
 }
 
+.aboutTitle, .aboutText {
+    text-align: center;
+}
+
 .hero { padding-top: 60px; }
 
 .hero-grid {
