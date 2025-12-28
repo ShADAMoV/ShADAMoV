@@ -54,40 +54,35 @@ header { border-bottom: 1px solid #222; }
     gap: 20px;
 }
 
-.card {
+.card, .stat, .badge {
     background: #17171c;
     padding: 25px;
     border-radius: 16px;
     line-height: 1.6;
+    transition: .4s;
+}
+
+.card:hover, .stat:hover, .badge:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.stat b { font-size: 36px; display: block; }
+
+.badge {
+    background: linear-gradient(135deg, #1d1d22, #121215);
+    text-align: center;
 }
 
 .about { background: #141417; }
 
 footer { border-top: 1px solid #222; text-align: center; }
 
+.fade { opacity: 0; transform: translateY(40px); }
+.show { opacity: 1; transform: none; transition: .8s; }
+
 @media (max-width: 900px) {
-    .hero-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .hero img {
-        max-width: 340px;
-        margin: auto;
-    }
-
-    .grid3 {
-        grid-template-columns: 1fr;
-    }
-
-    .cta {
-        text-align: center;
-    }
-
-    .lang-switch button {
-        margin-left: 6px;
-        padding: 8px 12px;
-    }
-
-    h1 { font-size: 28px; }
+    .hero-grid { grid-template-columns: 1fr; text-align: center; }
+    .grid3 { grid-template-columns: 1fr; }
+    .cta { width: 100%; }
 }
