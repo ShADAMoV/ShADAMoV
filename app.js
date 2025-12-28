@@ -1,7 +1,7 @@
 const dict = {
     ru: {
         title: "Вы заговорите по-арабски уже через 6 месяцев",
-        subtitle: "Персональные онлайн-занятия с Абдулрахманом Ясином — преподавателем с 22-летним опытом.",
+        subtitle: "Персональные онлайн-занятия с АбдуРохьманом Ясином — преподавателем с 22-летним опытом.",
         cta: "Записаться в WhatsApp",
         f1: "📘 Понятная грамматика — без зубрёжки и сложных схем.",
         f2: "🗣️ Реальная разговорная практика с первых уроков.",
@@ -17,7 +17,7 @@ const dict = {
     },
     en: {
         title: "Speak Arabic confidently in just 6 months",
-        subtitle: "Personal online lessons with Abdulrahman Yasin — 22 years of experience.",
+        subtitle: "Personal online lessons with AbduRrohman Yasin — 22 years of experience.",
         cta: "Book on WhatsApp",
         f1: "📘 Clear grammar without boring memorization.",
         f2: "🗣️ Real speaking practice from the first lesson.",
