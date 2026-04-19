@@ -295,7 +295,6 @@ button {
     position: relative;
     width: 100%;
     max-width: 450px;
-    aspect-ratio: 1;
     border-radius: var(--radius-xl);
     overflow: hidden;
     box-shadow: var(--shadow-xl);
@@ -966,7 +965,7 @@ section {
     }
     
     .hero {
-        padding: 100px 0 60px;
+        padding: 100px 0 160px;
         min-height: auto;
     }
     
