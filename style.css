@@ -662,6 +662,8 @@ section {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    direction: ltr;
+    unicode-bidi: isolate;
     width: 48px;
     height: 48px;
     background: var(--color-bg-card);
@@ -1031,16 +1033,6 @@ section {
 /* RTL Specific Styles */
 .rtl .lang-switch {
     direction: ltr;
-}
-
-.rtl .carousel-prev {
-    left: auto;
-    right: 16px;
-}
-
-.rtl .carousel-next {
-    right: auto;
-    left: 16px;
 }
 
 .rtl .btn-secondary .btn-arrow {
