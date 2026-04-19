@@ -728,6 +728,37 @@ section {
 }
 
 /* ========================================
+   Videos / Video Carousel
+======================================== */
+.videos {
+    background: var(--color-bg-primary);
+    padding-bottom: 60px;
+}
+
+.carousel-container--video {
+    padding-bottom: 48px;
+}
+
+.carousel-container--video .carousel-slide {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-container--video .carousel-slide video {
+    width: 100%;
+    height: 100%;
+    max-height: min(70vh, 720px);
+    object-fit: contain;
+    background: #000;
+}
+
+.carousel-container--video .carousel-dots {
+    bottom: 12px;
+}
+
+/* ========================================
    CTA Section
 ======================================== */
 .cta-section {

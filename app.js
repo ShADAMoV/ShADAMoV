@@ -30,6 +30,8 @@ const dict = {
         highlight3: "Поддержка и помощь на всех этапах обучения",
         galleryTitle: "Наши студенты",
         gallerySubtitle: "Моменты с занятий и наши достижения",
+        videosTitle: "Видео с уроков",
+        videosSubtitle: "Фрагменты занятий и отзывы — смотрите, как проходят наши уроки",
         ctaTitle: "Готовы начать изучение арабского?",
         ctaSubtitle: "Запишитесь на пробный урок уже сегодня и сделайте первый шаг к свободному владению языком!",
     },
@@ -61,6 +63,8 @@ const dict = {
         highlight3: "Support and assistance at all learning stages",
         galleryTitle: "Our Students",
         gallerySubtitle: "Moments from lessons and our achievements",
+        videosTitle: "Lesson videos",
+        videosSubtitle: "Clips from lessons and feedback — see how our classes work",
         ctaTitle: "Ready to Start Learning Arabic?",
         ctaSubtitle: "Sign up for a trial lesson today and take the first step towards language fluency!",
     },
@@ -92,6 +96,8 @@ const dict = {
         highlight3: "دعم ومساعدة في جميع مراحل التعلم",
         galleryTitle: "طلابنا",
         gallerySubtitle: "لحظات من الدروس وإنجازاتنا",
+        videosTitle: "فيديوهات من الدروس",
+        videosSubtitle: "مقاطع من الحصص وآراء الطلاب — شاهد كيف تسير دروسنا",
         ctaTitle: "هل أنت مستعد لبدء تعلم العربية؟",
         ctaSubtitle: "سجّل في درس تجريبي اليوم وخذ الخطوة الأولى نحو إتقان اللغة!",
     }
@@ -159,7 +165,9 @@ class Carousel {
         this.currentIndex = 0;
         this.totalSlides = this.slides.length;
         this.autoPlayInterval = null;
-        this.autoPlayDelay = 3000;
+        const delayAttr = parseInt(container.dataset.autoplayDelay, 10);
+        this.autoPlayDelay = Number.isFinite(delayAttr) && delayAttr > 0 ? delayAttr : 3000;
+        this.manageVideos = container.dataset.carouselVideos === 'true';
         this.isDragging = false;
         this.startX = 0;
         this.currentX = 0;
@@ -213,6 +221,7 @@ class Carousel {
     }
     
     startDrag(e) {
+        if (e.target && e.target.closest && e.target.closest('video')) return;
         this.isDragging = true;
         this.startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
         this.track.style.transition = 'none';
@@ -253,6 +262,17 @@ class Carousel {
         this.dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === this.currentIndex);
         });
+
+        if (this.manageVideos) {
+            this.slides.forEach((slide, i) => {
+                const video = slide.querySelector('video');
+                if (!video) return;
+                if (i !== this.currentIndex) {
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            });
+        }
     }
     
     goToSlide(index) {
@@ -287,12 +307,11 @@ class Carousel {
     }
 }
 
-// Initialize carousel
+// Initialize carousels (gallery, videos, etc.)
 document.addEventListener('DOMContentLoaded', () => {
-    const carouselContainer = document.querySelector('.carousel-container');
-    if (carouselContainer) {
+    document.querySelectorAll('.carousel-container').forEach((carouselContainer) => {
         new Carousel(carouselContainer);
-    }
+    });
 });
 
 /* ========================================
@@ -414,8 +433,7 @@ const statsObserver = new IntersectionObserver((entries) => {
                 const match = text.match(/(\d+)/);
                 if (match) {
                     const number = parseInt(match[1]);
-                    const suffix = text.replace(match[1], '');
-                    stat.dataset.suffix = suffix;
+                    stat.dataset.suffix = text.replace(match[1], '');
                     animateCounter(stat, number);
                 }
             });
