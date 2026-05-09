@@ -68,6 +68,39 @@ const dict = {
         ctaTitle: "Ready to Start Learning Arabic?",
         ctaSubtitle: "Sign up for a trial lesson today and take the first step towards language fluency!",
     },
+    fr: {
+        heroBadge: "🎓 Cours en ligne",
+        title: "Parlez arabe avec assurance en seulement <span class=\"gradient-text\">6 mois</span>",
+        subtitle: "Cours particuliers en ligne avec AbduRrohman Yasin — 22 ans d'experience. Approche individuelle et resultats garantis.",
+        cta: "Reserver sur WhatsApp",
+        learnMore: "En savoir plus",
+        stat1: "ans d'experience",
+        stat2: "eleves formes avec succes",
+        stat3: "mois pour parler avec aisance",
+        b1: "Professeur certifie",
+        b2: "Etudiants internationaux",
+        b3: "Methode d'enseignement personnelle",
+        featuresTitle: "Pourquoi nous choisir ?",
+        featuresSubtitle: "Une approche moderne pour apprendre l'arabe",
+        f1Title: "Grammaire claire",
+        f1: "📘 Nous expliquons les regles complexes simplement. Pas de bachotage, seulement de la comprehension et de la pratique.",
+        f2Title: "Pratique orale",
+        f2: "🗣️ Parlez des le premier cours. Depassez la barriere de la langue et communiquez avec assurance.",
+        f3Title: "Lecture et comprehension",
+        f3: "📖 Apprenez a lire le Coran et les textes modernes. Travail de l'ecoute et de la comprehension a un niveau eleve.",
+        aboutBadge: "👨‍🏫 A propos du professeur",
+        aboutTitle: "Pourquoi le choisir ?",
+        aboutText: "Abdulrahman Yasin est un professeur experimente qui transforme l'arabe en langue vivante. En 22 ans, il a developpe une methode unique qui permet aux etudiants de parler en quelques mois.",
+        highlight1: "Programme individuel pour chaque etudiant",
+        highlight2: "Supports modernes et methodes eprouvees",
+        highlight3: "Accompagnement a chaque etape de l'apprentissage",
+        galleryTitle: "Nos etudiants",
+        gallerySubtitle: "Moments de cours et nos reussites",
+        videosTitle: "Videos des cours",
+        videosSubtitle: "Extraits des cours et retours des eleves — voyez comment se passent nos lecons",
+        ctaTitle: "Pret a commencer l'arabe ?",
+        ctaSubtitle: "Inscrivez-vous a un cours d'essai des aujourd'hui et faites le premier pas vers la maitrise de la langue !",
+    },
     ar: {
         heroBadge: "🎓 التعلم عبر الإنترنت",
         title: "تحدث العربية بطلاقة خلال <span class=\"gradient-text\">٦ أشهر فقط</span>",
@@ -106,7 +139,33 @@ const dict = {
 /* ========================================
    Language Switcher
 ======================================== */
+const langSwitch = document.querySelector('.lang-switch');
+const langToggle = langSwitch.querySelector('.lang-toggle');
+const langCurrent = langSwitch.querySelector('.lang-current');
+const langMenu = langSwitch.querySelector('.lang-menu');
+const langOptions = Array.from(langSwitch.querySelectorAll('.lang-option'));
+
+function closeLangMenu() {
+    langSwitch.classList.remove('open');
+    langToggle.setAttribute('aria-expanded', 'false');
+    langMenu.hidden = true;
+}
+
+function updateLangSwitcher(lang) {
+    langCurrent.textContent = lang.toUpperCase();
+
+    langOptions.forEach(btn => {
+        const isCurrent = btn.dataset.lang === lang;
+        btn.hidden = isCurrent;
+        btn.disabled = isCurrent;
+    });
+}
+
 function setLang(lang) {
+    if (!dict[lang]) {
+        lang = 'ar';
+    }
+
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
     
@@ -132,22 +191,37 @@ function setLang(lang) {
         }
     });
     
-    // Update active state on language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
+    updateLangSwitcher(lang);
+    closeLangMenu();
 }
 
 // Initialize language
 const savedLang = localStorage.getItem('lang') || 'ar';
 setLang(savedLang);
 
-// Add click handlers to language buttons
-document.querySelectorAll('.lang-btn').forEach(btn => {
+langToggle.addEventListener('click', () => {
+    const isOpen = langSwitch.classList.toggle('open');
+    langToggle.setAttribute('aria-expanded', String(isOpen));
+    langMenu.hidden = !isOpen;
+});
+
+langOptions.forEach(btn => {
     btn.addEventListener('click', () => {
         const lang = btn.dataset.lang;
         setLang(lang);
     });
+});
+
+document.addEventListener('click', (event) => {
+    if (!langSwitch.contains(event.target)) {
+        closeLangMenu();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeLangMenu();
+    }
 });
 
 /* ========================================

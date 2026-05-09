@@ -23,9 +23,16 @@
         </div>
         <div class="nav-right">
             <div class="lang-switch">
-                <button class="lang-btn" data-lang="ru">RU</button>
-                <button class="lang-btn" data-lang="en">EN</button>
-                <button class="lang-btn active" data-lang="ar">AR</button>
+                <button class="lang-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="lang-current">AR</span>
+                    <span class="lang-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="lang-menu" hidden>
+                    <button class="lang-option" type="button" data-lang="ru">RU</button>
+                    <button class="lang-option" type="button" data-lang="en">EN</button>
+                    <button class="lang-option" type="button" data-lang="fr">FR</button>
+                    <button class="lang-option" type="button" data-lang="ar">AR</button>
+                </div>
             </div>
         </div>
     </div>
@@ -78,7 +85,7 @@
             <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="url(#heroGradient)"/>
             <defs>
                 <linearGradient id="heroGradient" x1="0" y1="0" x2="1440" y2="120" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#0f0f1a"/>
+                    <stop offset="0" stop-color="#0f0f1a"/>
                     <stop offset="1" stop-color="#1a1a2e"/>
                 </linearGradient>
             </defs>
