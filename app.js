@@ -144,6 +144,7 @@ const langToggle = langSwitch.querySelector('.lang-toggle');
 const langCurrent = langSwitch.querySelector('.lang-current');
 const langMenu = langSwitch.querySelector('.lang-menu');
 const langOptions = Array.from(langSwitch.querySelectorAll('.lang-option'));
+const supportsIntersectionObserver = typeof window.IntersectionObserver === 'function';
 
 function closeLangMenu() {
     langSwitch.classList.remove('open');
@@ -166,7 +167,12 @@ function setLang(lang) {
         lang = 'ar';
     }
 
-    localStorage.setItem('lang', lang);
+    try {
+        localStorage.setItem('lang', lang);
+    } catch (error) {
+        // Some mobile browsers can block storage in strict/private modes.
+    }
+
     document.documentElement.lang = lang;
     
     // Handle RTL/LTR
@@ -196,7 +202,12 @@ function setLang(lang) {
 }
 
 // Initialize language
-const savedLang = localStorage.getItem('lang') || 'ar';
+let savedLang = 'ar';
+try {
+    savedLang = localStorage.getItem('lang') || 'ar';
+} catch (error) {
+    savedLang = 'ar';
+}
 setLang(savedLang);
 
 langToggle.addEventListener('click', () => {
@@ -242,6 +253,7 @@ class Carousel {
         const delayAttr = parseInt(container.dataset.autoplayDelay, 10);
         this.autoPlayDelay = Number.isFinite(delayAttr) && delayAttr > 0 ? delayAttr : 3000;
         this.manageVideos = container.dataset.carouselVideos === 'true';
+        this.videoLoadingEnabled = !this.manageVideos;
         this.isDragging = false;
         this.startX = 0;
         this.currentX = 0;
@@ -251,9 +263,48 @@ class Carousel {
     
     init() {
         this.createDots();
-        this.updateCarousel();
         this.addEventListeners();
+        if (this.manageVideos) {
+            this.setupVideoLazyLoading();
+        }
+        this.updateCarousel();
         this.startAutoPlay();
+    }
+
+    setupVideoLazyLoading() {
+        if (!supportsIntersectionObserver) {
+            this.videoLoadingEnabled = true;
+            return;
+        }
+
+        const videoObserver = new IntersectionObserver((entries) => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                this.videoLoadingEnabled = true;
+                this.updateCarousel();
+                videoObserver.disconnect();
+            }
+        }, {
+            rootMargin: '320px 0px',
+            threshold: 0.01
+        });
+
+        videoObserver.observe(this.container);
+    }
+
+    loadVideoAt(index) {
+        const slide = this.slides[index];
+        if (!slide) return;
+
+        const video = slide.querySelector('video[data-src]');
+        if (!video || video.src) return;
+
+        video.src = video.dataset.src;
+        video.load();
+    }
+
+    loadNearbyVideos() {
+        this.loadVideoAt(this.currentIndex);
+        this.loadVideoAt((this.currentIndex + 1) % this.totalSlides);
     }
     
     createDots() {
@@ -338,6 +389,10 @@ class Carousel {
         });
 
         if (this.manageVideos) {
+            if (this.videoLoadingEnabled) {
+                this.loadNearbyVideos();
+            }
+
             this.slides.forEach((slide, i) => {
                 const video = slide.querySelector('video');
                 if (!video) return;
@@ -365,6 +420,8 @@ class Carousel {
     }
     
     startAutoPlay() {
+        if (this.manageVideos) return;
+
         this.stopAutoPlay();
         this.autoPlayInterval = setInterval(() => this.next(), this.autoPlayDelay);
     }
@@ -397,29 +454,35 @@ const observerOptions = {
     threshold: 0.1
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            
-            // Add stagger delay for feature cards
-            if (entry.target.classList.contains('feature-card')) {
-                const index = Array.from(entry.target.parentElement.children).indexOf(entry.target);
-                entry.target.style.transitionDelay = `${index * 0.1}s`;
+if (supportsIntersectionObserver) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Add stagger delay for feature cards
+                if (entry.target.classList.contains('feature-card')) {
+                    const index = Array.from(entry.target.parentElement.children).indexOf(entry.target);
+                    entry.target.style.transitionDelay = `${index * 0.1}s`;
+                }
             }
-        }
+        });
+    }, observerOptions);
+
+    // Observe feature cards
+    document.querySelectorAll('.feature-card').forEach(card => {
+        observer.observe(card);
     });
-}, observerOptions);
 
-// Observe feature cards
-document.querySelectorAll('.feature-card').forEach(card => {
-    observer.observe(card);
-});
-
-// Observe about stat cards
-document.querySelectorAll('.about-stat-card').forEach(card => {
-    observer.observe(card);
-});
+    // Observe about stat cards
+    document.querySelectorAll('.about-stat-card').forEach(card => {
+        observer.observe(card);
+    });
+} else {
+    document.querySelectorAll('.feature-card, .about-stat-card').forEach(element => {
+        element.classList.add('visible');
+    });
+}
 
 /* ========================================
    Navbar Scroll Effect
@@ -497,31 +560,40 @@ function animateCounter(element, target, duration = 2000) {
     }, 16);
 }
 
-// Trigger counter animation when stats are visible
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statNumbers = entry.target.querySelectorAll('.stat-number, .about-stat-number');
-            statNumbers.forEach(stat => {
-                const text = stat.textContent;
-                const match = text.match(/(\d+)/);
-                if (match) {
-                    const number = parseInt(match[1]);
-                    stat.dataset.suffix = text.replace(match[1], '');
-                    animateCounter(stat, number);
-                }
-            });
-            statsObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.5 });
-
 // Observe hero stats and about stats
 const heroStats = document.querySelector('.hero-stats');
 const aboutStats = document.querySelector('.about-stats');
 
-if (heroStats) statsObserver.observe(heroStats);
-if (aboutStats) statsObserver.observe(aboutStats);
+function animateStatsIn(container) {
+    const statNumbers = container.querySelectorAll('.stat-number, .about-stat-number');
+    statNumbers.forEach(stat => {
+        const text = stat.textContent;
+        const match = text.match(/(\d+)/);
+        if (match) {
+            const number = parseInt(match[1]);
+            stat.dataset.suffix = text.replace(match[1], '');
+            animateCounter(stat, number);
+        }
+    });
+}
+
+if (supportsIntersectionObserver) {
+    // Trigger counter animation when stats are visible
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateStatsIn(entry.target);
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    if (heroStats) statsObserver.observe(heroStats);
+    if (aboutStats) statsObserver.observe(aboutStats);
+} else {
+    if (heroStats) animateStatsIn(heroStats);
+    if (aboutStats) animateStatsIn(aboutStats);
+}
 
 /* ========================================
    Add Visible Class on Page Load
