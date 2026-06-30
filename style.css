@@ -671,6 +671,8 @@ section {
 .carousel-container {
     position: relative;
     overflow: hidden;
+    direction: ltr;
+    unicode-bidi: isolate;
     border-radius: var(--radius-xl);
     background: var(--color-bg-primary);
     border: 1px solid var(--color-border);
@@ -679,10 +681,14 @@ section {
 .carousel {
     position: relative;
     overflow: hidden;
+    direction: ltr;
+    unicode-bidi: isolate;
 }
 
 .carousel-track {
     display: flex;
+    direction: ltr;
+    unicode-bidi: isolate;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: grab;
 }
@@ -696,6 +702,8 @@ section {
     aspect-ratio: 1;
     overflow: hidden;
     background: var(--color-bg-tertiary);
+    direction: ltr;
+    unicode-bidi: isolate;
 }
 
 .carousel-slide img {
