@@ -678,6 +678,11 @@ section {
     border: 1px solid var(--color-border);
 }
 
+.carousel-container * {
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+
 .carousel {
     position: relative;
     overflow: hidden;
